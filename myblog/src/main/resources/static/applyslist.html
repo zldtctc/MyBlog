@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<ul id="show-applys">
+		好友申请列表
+		
+	</ul>
+	
+<script type="text/javascript" src="myjs/jquery-1.4.2.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		showRemind();
+	});
+	
+	function showRemind(){
+		$.ajax({
+			"url":"/friends/get-applys",
+			"type":"get",
+			"dataType":"json",
+			"success":function(result){
+				if(result.state==1){
+					let list = result.data;
+					if(list.length>0){
+						for(let i = 0;i<list.length;i++){
+							let html = "<li>#{nickname}(#{username})<input type='button' id='btn-pass' value='通过' onclick=pass(#{id})>"
+							+ "<input type='button' id='btn-refuse' value='拒绝' onclick=refuse(#{id})></li>";
+							html = html.replace(/#{nickname}/g,list[i].nickname);
+							html = html.replace(/#{username}/g,list[i].username);
+							html = html.replace(/#{id}/g,list[i].id);
+							console.log(html);
+							$("#show-applys").append(html);
+						}
+					}
+				}else{
+					alert("获取提醒信息失败:"+result.message);
+				}
+			}
+		});
+	}
+	
+	function pass(id){
+		$.ajax({
+			"url":"/friends/agree-applys?uid="+id,
+			"type":"post",
+			"dataType":"json",
+			"success":function(result){
+				if(result.state==1){
+					alert("通过申请，完成添加好友操作");
+					$("#show-applys").empty();
+					showRemind();
+				}else{
+					alert(result.message);
+				}
+			}
+		});
+	}
+</script>
+</body>
+</html>

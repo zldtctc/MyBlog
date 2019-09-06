@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.home.myblog.mapper.IUserMapper">
+	<resultMap type="com.home.myblog.entity.User" id="UserMap">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="email" property="email"/>
+		<result column="identity" property="identity"/>
+		<result column="nickname" property="nickname"/>
+		<result column="resume" property="resume"/>
+	</resultMap>
+	
+	<select id="findByUsername" resultMap="UserMap">
+		SELECT * FROM myusers WHERE username=#{username}
+	</select>
+	
+	<select id="findByUserId" resultMap="UserMap">
+		SELECT * FROM myusers WHERE id=#{id}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO 
+			myusers(
+				username,password,salt,email,identity,nickname,resume
+			)
+		VALUES(
+			#{username},#{password},#{salt},#{email},
+			#{identity},#{nickname},#{resume}
+		)
+	</insert>
+	
+	<update id="modifyById">
+		UPDATE 
+			myusers
+		SET
+			nickname=#{nickname},email=#{email},resume=#{resume}
+		WHERE
+			id=#{id}
+	</update>
+	
+	<update id="uploadAvatar">
+		UPDATE
+			myusers
+		SET
+			avatar=#{avatar}
+		WHERE	
+			id=#{id}
+	</update>
+	
+	<update id="modifyPasswordById">
+		UPDATE
+			myusers
+		SET
+			password=#{password}
+		WHERE
+			id=#{id}
+	</update>
+</mapper>
+
+
+
+
+
+

@@ -1,0 +1,61 @@
+@charset "UTF-8";
+*{
+	margin: 0;
+	padding: 0;
+	font-family: "montserrat",sans-serif;
+}
+body{
+	background: url(../myimages/bj_PIM.jpg) repeat;
+	/* background-size: cover; */
+}
+
+/* nav 顶部导航部分 */
+.nav-ul{
+	top: 0;
+	border: 0;
+	background-color: #eccc68;
+	overflow: hidden;
+	position: fixed;
+	width: 100%;
+}
+.nav-ul>li{
+	display: inline-block;
+	list-style-type: none;
+	color: white;
+	font-weight: 300;
+}
+.li1,.li2{
+	padding-top: 6px;
+}
+.li1{
+	margin-left: 200px;
+}
+.message,.about,.remind{
+	padding: 7px;
+	cursor: pointer;
+}
+.about{
+	margin-right: 40px;
+}
+.message>a{
+	text-decoration: none;
+}
+.search-text,.search-btn{
+	border: 0;
+	padding: 3px;
+	border-radius: 6px;
+}
+.search-text{
+	font-size: 10px; 
+	color: #747d8c;
+}
+.search-btn{
+	font-size: 10px; 
+	color: white;
+	width: 40px;
+	background-color: #ffa502;
+	cursor: pointer;
+}
+.message:hover,.about:hover,.remind:hover{
+	background-color: #ffa502;
+}

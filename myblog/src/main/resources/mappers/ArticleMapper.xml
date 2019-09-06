@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.home.myblog.mapper.IArticleMapper">
+ 
+ 	<resultMap type="com.home.myblog.entity.Article" id="ArticleMap">
+ 		<id column="article_id" property="articleId"/>
+ 		<result column="article_title" property="articleTitle"/>
+ 		<result column="article_article" property="articleText"/>
+ 		<result column="article_publish_time" property="articlePublishTime"/>
+ 		<result column="article_modify_time" property="articleModifyTime"/>
+ 		<result column="article_good_amount" property="articleGoodAmount"/>
+ 		<result column="article_transmit_amount" property="articleTransmitAmount"/>
+ 		<result column="article_comment_amount" property="articleCommentAmount"/>
+ 		<result column="user_id" property="userId"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="com.home.myblog.entity.ThumpsUp" id="ThumpsUpMap">
+ 		<result column="article_id" property="articleId"/>
+ 		<result column="good_id" property="goodId"/>
+ 		<result column="created_time" property="createdTime"/>
+ 	</resultMap>
+ 	
+ 	<insert id="publish">
+ 		INSERT INTO
+ 			user_article(
+ 				article_title, article_article, 
+ 				article_publish_time, article_modify_time,
+ 				article_good_amount, article_transmit_amount,
+ 				article_comment_amount,user_id
+ 			)
+ 		VALUES(
+ 			#{articleTitle},#{articleText},
+ 			#{articlePublishTime},#{articleModifyTime},
+ 			#{articleGoodAmount},#{articleTransmitAmount},
+ 			#{articleCommentAmount},#{userId}
+ 		)
+ 	</insert>
+ 	
+ 	<!--对另一张表article_good进行插入操作  -->
+ 	<!-- Integer insertThumpsUp(ThumpsUp thumpsUp) -->
+ 	<insert id="insertThumpsUp">
+ 		INSERT INTO 
+ 			article_good(
+ 				article_id,good_id,created_time
+ 			) 
+ 		VALUES(
+ 			#{articleId},
+ 			#{goodId},
+ 			#{createdTime}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="findContextByUserId" resultMap="ArticleMap">
+ 		SELECT
+ 			*
+ 		FROM
+ 			user_article
+ 		WHERE
+ 			user_id=#{userId}
+ 		ORDER BY
+ 			article_publish_time DESC
+ 		LIMIT
+ 			#{skip},#{quantity}
+ 	</select>
+ 	
+ 	<select id="findArticleByArticleId" resultMap="ArticleMap">
+ 		SELECT
+ 			*
+ 		FROM
+ 			user_article
+ 		WHERE
+ 			article_id=#{articleId}
+ 	</select>
+ 	
+ 	<!--对另一张表article_good进行操作，查询当前用户是否对当前文章点过赞  -->
+ 	<!--ThumpsUp findThumpsUp(@Param("articleId") Integer articleId,@Param("goodId") Integer goodId)  -->
+ 	<select id="findThumpsUp" resultMap="ThumpsUpMap">
+ 		SELECT 
+ 			*
+ 		FROM 
+ 			article_good 
+ 		WHERE 
+ 			good_id=#{goodId}
+ 		AND
+ 			article_id=#{articleId}
+ 	</select>
+ 	
+ 	<!--  -->
+ 	<!--List<Article> findFriendsArticle(Integer uid)  -->
+ 	<select id="findFriendsArticle" resultMap="ArticleMap">
+ 		SELECT
+ 			*
+ 		FROM
+ 			user_article
+ 		WHERE
+ 			user_id
+ 		IN
+ 		(
+ 			SELECT
+ 				fid
+ 			FROM
+ 				friends
+ 			WHERE
+ 				uid=#{uid}
+ 		)
+ 		ORDER BY
+ 			article_publish_time
+ 		DESC
+ 		LIMIT
+ 			#{pass},#{show}
+ 	</select>
+ 	
+ 	
+ 	<!--点赞数量增+1  -->
+ 	<!--Integer thumpsUpById(Integer articleId) -->
+ 	<update id="thumpsUpById">
+ 		UPDATE
+ 			user_article
+ 		SET
+ 			article_good_amount = article_good_amount + 1
+ 		WHERE
+ 			article_id=#{articleId}
+ 	</update>
+ 	
+ </mapper>

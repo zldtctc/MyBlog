@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="mycss/indexcss.css">
+</head>
+<body>
+	<form class="box" >
+		<h1>Login</h1>
+		<input type="text" name="username" placeholder="Username">
+		<input type="password" name="password" placeholder="Password">
+		<input class="btn-login" type="button" value="登 录">
+	</form> 
+	<div>
+		<h1>家园博客</h1>
+	</div>
+	<script type="text/javascript" src="myjs/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript">
+		$(".btn-login").click(function(){
+			$(this).attr("disabled","disabled");
+			
+			$.ajax({
+				"url":"users/login",
+				"data":$(".box").serialize(),
+				"type":"post",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						window.location.href ="homepage.html";
+					}else{
+						alert("登录失败:"+result.message);
+					}
+					$(".btn-login").attr("disabled",false);
+				}
+			});
+		});
+	</script>
+</body>
+</html>

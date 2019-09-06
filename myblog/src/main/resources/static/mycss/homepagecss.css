@@ -1,0 +1,103 @@
+@charset "UTF-8";
+header{
+		overflow: hidden;
+}
+header>.blog-title{
+	height: 180px;
+	width: 70%;
+	margin-top: 42px;
+	margin-left: 185px;
+	background: rgba(0,0,0,0.3);
+	overflow: hidden;
+	/* position: relative; */
+}
+.container-img{
+	display: inline-block;
+	width: 100px;
+	/* height: 100px; */
+	border: 1px solid black;
+	margin-top:  35px;
+	margin-left: 160px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.container-img img{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+}
+.container-title{
+	display: inline-block;
+	/* border: 1px solid red; */
+	/* position: absolute; */
+	/* left: 30%; */
+	/* top: 20%; */
+	overflow: hidden;
+	margin: 20px;
+}
+
+.container-title>h3{
+	padding-left: 20px;
+	padding-top: 5px;
+}
+
+/* article部分 */
+article>.container-text{
+	margin-left: 185px;
+	border: 0;
+	width: 52%;
+}
+
+article .div-textarea{
+	padding: 9px;
+	margin: 10px auto;
+	width: 70%;
+	border: 0;
+}
+.div-textarea>h4{
+	color: white;
+	word-spacing: 2px;
+} 
+.head-time{
+	color: white;	
+	margin: 0;
+}
+.div-textarea textarea{
+	resize: none;
+	height: 80px;
+	width: 99%;
+	padding: 5px ;
+	background: rgba(0,0,0,0.7);
+	color: white;
+	border: 0;
+	margin: 0;
+}
+textarea:focus{
+	box-shadow: 0 0 4px 2px #3742fa;
+}
+.btn-publish{
+	float: right;
+	width: 60px;
+	padding: 4px;
+	margin-top: 3px;
+	margin-bottom: 25px;
+	border: 1px solid #747d8c;
+	background-color: #747d8c;
+	color: white;
+	cursor: pointer;
+}
+.btn-publish:hover{
+	background-color: #ffa502;
+	border: 1px solid #ffa502;
+}
+.trends-data{
+	color: white;
+}
+.trends-data>input{
+	margin: 2px;
+
+	border-radius: 2px;
+}
+
+
+

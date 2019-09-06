@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.home.myblog.mapper.IFriendsMapper">
+	<resultMap type="com.home.myblog.entity.Apply" id="ApplyMap">
+		<id column="id" property="id" />
+		<result column="uid" property="uid"/>
+		<result column="fid" property="fid"/>
+		<result column="apply_time" property="applyTime"/>
+		<result column="status" property="status"/>
+		<result column="status_time" property="statusTime"/>
+	</resultMap>
+	
+	<resultMap type="com.home.myblog.entity.Friends" id="FriendsMap">
+		<id column="id" property="id" />
+		<result column="uid" property="uid"/>
+		<result column="fid" property="fid"/>
+		<result column="created_time" property="createdTime"/>
+	</resultMap>
+	
+	<!--添加好友申请  -->
+	<!--Integer insertApply(Apply apply)  -->
+	<insert id="insertApply" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO friends_apply(
+			uid,fid,apply_time,status,status_time
+		) VALUES(
+			#{uid},#{fid},
+			#{applyTime},#{status},
+			#{statusTime}
+		);
+	</insert>
+	
+	<!--通过好友申请，添加好友关系数据  -->
+	<!--Integer insertFriends(Friends friends)  -->
+	<insert id="insertFriends" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO friends(
+			uid,fid,created_time
+		) VALUES(
+			#{uid},#{fid},
+			#{createdTime}
+		);
+	</insert>
+	
+	<!--根据昵称搜索用户id  -->
+	<!--Integer findByNickname(String nickname)  -->
+	<select id="findByNickname" resultType="com.home.myblog.entity.User">
+		SELECT 
+			*
+		FROM
+			myusers
+		WHERE
+			nickname=#{nickname}
+	</select>
+	
+	<!--根据发起者和接收者的id查询申请信息  -->
+	<!--Apply findByUidAndFid(@Param("uid") Integer uid,@Param("fid") Integer fid)  -->
+	<select id="findByUidAndFid" resultMap="ApplyMap">
+		SELECT
+			* 
+		FROM
+			friends_apply
+		WHERE
+			uid=#{uid}
+		AND
+			fid=#{fid}
+	</select>
+	
+	<!-- 根据接收者的id查询申请表中未被接受者处理的信息 -->
+	<!--Apply findByFid(Integer fid)  -->
+	<select id="findByFid" resultMap="ApplyMap">
+		SELECT
+			 *
+		FROM 
+			friends_apply 
+		WHERE
+			fid=#{fid}
+		AND
+			status=0
+	</select>
+	
+	<!-- 查询两者之间是否好友关系  -->
+	<!-- Friends findFriendByUidAndFid(@Param("uid") Integer uid,@Param("fid") Integer fid) -->
+	<select id="findFriendByUidAndFid" resultMap="FriendsMap">
+		SELECT
+			*
+		FROM
+			friends
+		WHERE
+			uid=#{uid}
+		AND
+			fid=#{fid}
+	</select>
+		
+	<!-- 当发起者重复对接收者发起申请时，只需更新申请发起时间即可 -->
+	<!-- Integer updateApplyTime(Date now) -->
+	<update id="updateApplyTime">
+		UPDATE
+			friends_apply
+		SET
+			apply_time=#{now}
+		WHERE
+			id=#{id}
+	</update>
+	
+	<!--  -->
+	<!--Integer updateApplyStatus(Apply apply)  -->
+	<update id="updateApplyStatus">
+		UPDATE
+			friends_apply
+		SET
+			status=#{status},
+			status_time=#{statusTime}
+		WHERE
+			uid=#{uid}
+		AND
+			fid=#{fid}
+	</update>
+</mapper>
+
+
+
+
+
+

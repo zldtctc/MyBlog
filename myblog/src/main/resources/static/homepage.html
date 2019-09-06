@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="mycss/navcss.css" >
+<link rel="stylesheet" type="text/css" href="mycss/homepagecss.css">
+</head>
+<body>
+	<header>
+		<nav>
+			<ul class="nav-ul">
+				<li class="li1"><input type="text" name="search" class="search-text" placeholder="Search..."></li>
+				<li class="li2"><input type="button" value="搜索" class="search-btn"></li>
+				<li style="float: right;" class="about">关于我们</li>
+				<li style="float: right;" class="message"><a href="PIMpage.html">个人信息</a></li>
+				<li style="float: right;" class="remind" onclick="goapply()">暂无提醒</li>
+			</ul>
+		</nav>
+		<div class="blog-title">
+			<div class="container-img">
+				<a href="#">
+					<img id="title-img" src="">
+				</a>
+			</div>
+			<div class="container-title">
+				<h2 id="title-nickname">XXX<span>的博客</span></h2>
+				<h3 id="title-resume">XXXXXXXXXXXXXXXXX</h3>
+			</div>
+		</div>
+	</header>
+	
+	<article>
+		<div	class="container-text">
+			<div class="div-textarea">
+				<h4>现 在 说 些 什 么 ?</h4>
+					<form class="form-textarea form-publish">
+						<textarea class="article" rows="" cols="" name="articleText" required></textarea>
+						<button class="btn-publish" >发布</button>
+					</form>
+			</div>
+<!-- 			<div  class="div-textarea">
+						<span class="head-time">发布于: #{article-publis-time}</span>
+						<textarea class="article" readonly="readonly" name="articleText" ></textarea>
+						<span class="trends-data">
+							<input type="button" value="转发1" class="">
+							<input type="button" value="点赞111" class="click-good">
+						</span>
+						<span class="tag" ></span>
+			</div> -->
+		</div>
+	</article>
+		
+	<aside>
+					
+	
+	</aside>
+	
+	<script type="text/javascript" src="myjs/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			showHead();
+			showArticle();
+			showRemind();
+		});
+		
+		function showHead(){
+			/* 头部的用户信息，头像，昵称，个人简介 */
+			$.ajax({
+				"url":"/users/title-message",
+				"type":"get",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						$("#title-nickname").text(result.data.nickname);
+						$("#title-resume").text(result.data.resume);
+						$("#title-img").attr("src",result.data.avatar);
+					}
+				}
+			});
+		}
+		
+		/* 显示用户个人动态 */
+		function showArticle(){
+			$.ajax({
+				"url":"article/",
+				"type":"get",
+				"dataType":"json",
+				"success":function(result){
+					let list = result.data;
+					console.log("集合长度:"+list.length);
+					for(let i =0;i<list.length;i++){
+						let html = '<div  class="div-textarea">'
+										+ '<form class="form-textarea">'
+										+ '<span class="head-time">发布于: #{article-publis-time}</span> '
+										+ '<textarea class="article" readonly="readonly" name="articleText" >#{article-text}</textarea>'
+										+ '<span class="trends-data">'
+										+ '<input type="button" value="转发#{article-transmit-amount}" class="">'
+										+ '<input type="button" value="点赞:#{article-good-amount}" onclick=clickGood(#{article-id}) id="btn-good">'
+										+ '</span>'
+										+'<span class="tag"></span>'
+										+ '</form>'
+										+ '</div>';
+						/* 替换掉时间字符串中的一些字符，让时间格式称为yyyy-MM-dd HH:mm:ss */
+						let time = list[i].articlePublishTime;
+						time = time.replace("T"," ");
+						time = time.replace(".000+0000","");
+						html = html.replace("#{article-publis-time}",time);
+						html = html.replace("#{article-text}",list[i].articleText);
+						html = html.replace("#{article-transmit-amount}",list[i].articleTransmitAmount);
+						html = html.replace("#{article-good-amount}",list[i].articleGoodAmount);
+						html = html.replace("#{article-id}",list[i].articleId);
+						
+						$(".container-text").append(html);
+					}
+				}
+			});
+		}
+		
+		/* 查询有无提醒信息 */
+		function showRemind(){
+			$.ajax({
+				"url":"/friends/get-applys",
+				"type":"get",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						let list = result.data;
+						if(list.length>0){
+							$(".remind").text("新消息("+list.length+"条)");
+							for(let i = 0;i<list.length;i++){
+								let html = "<li>#{nickname}(#{username})</li>";
+								html = html.replace(/#{nickname}/g,list[i].nickname);
+								html = html.replace(/#{username}/g,list[i].username);
+								console.log(html);
+								$("#show-applys").append(html);
+							}
+						}
+					}else{
+						alert("获取提醒信息失败:"+result.message);
+					}
+				}
+			});
+		}
+		
+		function goapply(){
+			location.href="applyslist.html";
+		}
+	
+		$(".btn-publish").click(function(){
+			$(".btn-publish").attr("disabled","disabled");			
+			$.ajax({
+				"url":"article/publish",
+				"data":$(".form-publish").serialize(),
+				"type":"post",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						location.href="homepage.html";
+						/* $(".article").val("");
+						showArticle(); */
+					}
+					$("btn-publish").attr("disabled",false);
+				}
+				/* "error":function(){
+					location.href="index.html";
+				} */
+			});
+		});
+		
+		function clickGood(articleId){
+			$.ajax({
+				"url":"article/"+articleId+"/thumps_up",
+				"type":"post",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						$("#btn-good").val("点赞:"+result.data);
+						/* location.href="homepage.html"; */
+					}else{
+						alert(result.message);
+					}
+				}
+			});
+		}
+		
+	</script>
+</body>
+</html>
+
+
+
+
+
+

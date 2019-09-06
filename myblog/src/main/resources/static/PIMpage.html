@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="mycss/PIMcss.css">
+
+</head>
+<body>
+	<header>
+		<nav>
+			<ul class="nav-ul">
+				<li class="li1"><input type="text" name="search" class="search-text" placeholder="Search..."></li>
+				<li class="li2"><input type="button" value="搜索" class="search-btn"></li>
+				<li style="float: right;" class="about">关于我们</li>
+				<li style="float: right;" class="message">个人信息</li>
+			</ul>
+		</nav>
+	</header>
+	
+	<article>
+		<div class="contain-border">
+			<ul class="contain-ul">
+				<li class="showMessage">基本信息</li>
+				<li>个人相册</li>
+				<li>个人发布</li>
+				<li class="change-password">修改密码</li>
+			</ul>
+		</div>
+	</article>
+	
+	<aside>
+		<div class="message-border" style="visibility: visibility;">
+			<div class="message-inside">
+				<h3>基本信息</h3>
+				<hr>		
+				<div class="message-person">
+					<form class="contact-form">
+						<span>账户:
+							<input type="text" name="username"  readonly="readonly"  class="contact-input">
+						</span>
+						<span>昵称:
+							<input type="text" name="nickname"  class="contact-input">
+						</span>
+						<span>邮箱:
+							<input type="text" name="email"  class="contact-input">
+						</span>
+						<span>个人简介:
+						</span>
+						<textarea class="contact-input"  name="resume"></textarea>
+						<input type="button" value="保存" class="contact-btn">
+					</form>
+					<div class="contain-table">
+						<form id="form-avatar"  enctype="multipart/form-data">
+							<div class="img">
+								<img  src=""  id="img-avatar">
+							</div>
+							<input type="file"  name="file"  id="file-choose">
+							<br>
+							<input type="button"  value="头像上传"  id="btn-avatar">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="password-border"  style="visibility: hidden;">
+			<div class="message-inside">
+				<h3>修改密码</h3>
+				<hr>		
+				<div class="message-person">
+					<form class="contact-form">
+						<span>旧密码:
+							<input type="text" name="old-password" >
+						</span>
+						<span>新密码:
+							<input type="text" name="new-password"  >
+						</span>
+						<span>确认密码:
+							<input type="text" name="check-new-password" >
+						</span>
+						<input type="button" value="保存" class="contact-btn">
+					</form>
+				</div>
+			</div>
+		</div>
+	</aside>
+	<script type="text/javascript" src="myjs/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="myjs/pimpage.js"></script>
+	<script type="text/javascript">
+		$(".showMessage").click(function(){
+			$(".message-border").siblings().attr("style","visibility: hidden");
+			$(".message-border").attr("style","visibility: visible");
+			$.ajax({
+				"url":"users/showMsg",
+				/* "data":$(".contact-form").serialize(),  */
+				"type":"get",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						$("input[name='username']").val(result.data.username);
+						$("input[name='nickname']").val(result.data.nickname);
+						$("input[name='email']").val(result.data.email);
+						$("textarea[name='resume']").val(result.data.resume);
+						$("input[name='id']").val(result.data.id);
+						$("#img-avatar").attr("src",result.data.avatar);
+					}
+				}
+			});
+		});
+		
+		$(".change-password").click(function(){
+			$(".message-border").hide();
+			$(".password-border").show();
+		});
+	
+		$("#btn-avatar").click(function(){
+			$.ajax({
+				"url":"/users/change_avatar",
+				"contentType":false,
+				"processData":false,
+				"data":new FormData($("#form-avatar")[0]),
+				"type":"POST",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						alert("上传头像成功");
+						$("#img-avatar").attr("src",result.data);
+					}else{
+						alert("上传失败:"+result.message);
+					}
+				}
+			});
+		});
+	</script>
+</body>
+</html>

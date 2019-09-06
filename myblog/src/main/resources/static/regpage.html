@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>注册页面</title>
+<link rel="stylesheet" type="text/css"  href="mycss/regpagecss.css"   />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="contact-section">
+		<h1>欢迎注册</h1>
+		<div class="border"></div>
+		<form class="contact-form" action="users/reg" method="post">
+			<input type="text" name="username" placeholder="您申请的账号" class="contact-input">
+			<input type="password" name="password" placeholder="您申请的密码" class="contact-input">
+			<input type="text" name="email" placeholder="您的验证邮箱" class="contact-input">
+			<input type="text" name="identity" placeholder="您的身份证号码" class="contact-input">
+			<input type="text" name="nickname" placeholder="您申请的昵称" class="contact-input">
+			<textarea class="contact-input" placeholder="您的个人简介" name="resume"></textarea>
+			<input type="submit" value="注册" class="contact-btn">
+		</form>
+	</div>
+</body>
+</html>

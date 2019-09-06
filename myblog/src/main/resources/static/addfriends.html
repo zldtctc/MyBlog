@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<input type="text" name="name" placeholder="好友名称" id="friends-name">
+	<input type="button" value="搜索" id="btn-search">
+	<ul id="list-result">
+		<li>搜索结果</li>
+		<!-- <li>jack<input type="button" name="add-friends" value="添加"></li> -->
+	</ul>
+	
+	
+	<script type="text/javascript" src="myjs/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#btn-search").click(function(){
+				let name = $("#friends-name").val();
+				search(name);
+			});
+		});
+		
+		function search(name){
+			$("#list-result").empty();
+			console.log("搜索:"+name);
+			$.ajax({
+				"url":"/friends/s-friends?nickname="+name,
+				"type":"get",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						let user = result.data;
+						let html = '<li>#{nickname}(#{username}) <input type="button" name="add-friends" value="添加" onclick="addfriends(#{fid})"></li>';
+						html = html.replace(/#{nickname}/g,user.nickname);
+						html = html.replace(/#{username}/g,user.username);
+						html = html.replace(/#{fid}/g,user.id);
+						$("#list-result").append(html);
+					}else{
+						alert("查找失败:"+result.message);
+					}
+				}
+			});
+		}
+		
+		function addfriends(fid){
+			$.ajax({
+				"url":"/friends/add-friends?fid="+fid,
+				"type":"post",
+				"dataType":"json",
+				"success":function(result){
+					if(result.state==1){
+						alert("已发送好友申请");
+					}else{
+						alert("申请失败："+result.message);
+					}
+				}
+			});
+		}
+	</script>
+</body>
+</html>
